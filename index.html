@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv='cache-control' content='no-cache'>
+  <meta http-equiv='expires' content='0'>
+  <meta http-equiv='pragma' content='no-cache'>
+  <title>Demo MVR </title>
+
+  <!-- Here are all the javascripts and css that you need, you can download them or linked them like here -->
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.js"></script>
+  <script type="text/javascript" src="c3.min.js"></script>
+  <link href="c3.css" rel="stylesheet" type="text/css">
+
+  <style>
+  	#sensor {
+		float:left;
+		width: 100%;
+	}
+
+  	#container1 {
+		float:left;
+		width: 10%;
+		height: 200px;
+
+	}
+
+	#container2 {
+		float:left;
+		width: 70%;
+		height: 200px;
+	}
+
+	#container3 {
+		float:left;
+		width: 20%;
+		height: 200px;
+	}
+  </style>
+
+</head>
+<body>
+
+<!-- You need an element with an id called "chart" to set a place where your chart will render-->
+<!-- <div id="sensor"> -->
+  <p id="demo">CHAO</p>
+	<div id="container1">
+		Informacion de Acelerómetro
+	</div>
+	<div id="container2">
+		<div id="chartAccel"  style="height: 200px;width: 100%;float:left"></div>
+		<!-- <div id="chartAccelY"  style="height: 200px;width: 200px;float:left;"></div>
+		<div id="chartAccelZ"  style="height: 200px;width: 200px;float:left;"></div> -->
+	</div>
+	<div id="container3">
+		Hola este es el container 3
+	</div>
+<!-- </div> -->
+<!-- <div id="sensor"> -->
+	<div id="container1">
+		Informacion de Giroscopio
+	</div>
+	<div id="container2">
+		<div id="chartGyro"  style="height: 200px;width: 100%;float:left"></div>
+		<!-- <div id="chartGyroY"  style="height: 200px;width: 200px;float:left"></div>
+		<div id="chartGyroZ"  style="height: 200px;width: 200px;float:left"></div> -->
+	</div>
+	<div id="container3">
+		Hola este es el container 3
+	</div>
+<!-- </div> -->
+	<div id="container1">
+    <!--////-->
+		Informacion de Temperatura
+    <!-- <canvas id="myCanvas" width="300" height="150" style="border:1px solid #d3d3d3;"> -->
+    <canvas id="myCanvas" width="150" height="150" style="border:1px solid #d3d3d3;">
+    Your browser does not support the HTML5 canvas tag.</canvas>
+
+    <script>
+
+    var c = document.getElementById("myCanvas");
+    var ctx = c.getContext("2d");
+    ctx.beginPath();
+    ctx.arc(100, 75, 50, 0, 2 * Math.PI);
+    ctx.stroke();
+    var font = "bold " + radius +"px serif";
+    ctx.font = font;
+    ctx.textBaseline = "top";
+    ctx.fillText("HOLAS", 200-radius/4 ,200-radius/2);
+    </script>
+    <!--////-->
+	</div>
+	<div id="container2">
+		<div id="temp"  style="height: 200px;width: 100%;float:left"></div>
+	</div>
+	<div id="container3">
+  <button type="button" id="alarmaTemp"></button>
+		<!-- <p id="alarmaTemp"></p> -->
+	</div>
+</body>
+
+<script>
+var chartAccel = c3.generate({
+    bindto: '#chartAccel',
+    data: {
+        x: 'x', //the x-axis
+        url: 'Accelerometer.csv' //it won't work locally. You need to upload it to a web server
+    },
+    axis: {
+        x: {
+            type: 'indexed' // needed?
+        }
+    }
+});
+
+setInterval(function () {
+  var hola = 1;
+  document.getElementById("demo").innerHTML = Math.random();
+    chartAccel.load({
+        url: 'Accelerometer.csv'
+    });
+}, 1000);
+
+var chartGyro = c3.generate({
+    bindto: '#chartGyro',
+    data: {
+        x: 'x', //the x-axis
+        url: 'Gyroscope.csv' //it won't work locally. You need to upload it to a web server
+    },
+    axis: {
+        x: {
+            type: 'indexed' // needed?
+        }
+    }
+});
+
+setInterval(function () {
+  var hola = 1;
+    chartGyro.load({
+        url: 'Gyroscope.csv'
+    });
+}, 1000);
+
+var temp = c3.generate({
+    bindto: '#temp',
+    data: {
+        x: 'x', //the x-axis
+        url: 'Temperature.csv' //it won't work locally. You need to upload it to a web server
+    },
+    axis: {
+        x: {
+            type: 'indexed' // needed?
+        }
+    }
+});
+
+setInterval(function () {
+  d3.csv("TemperatureAlarm.csv", function(data) {
+    data.forEach(function(d) {
+      if (d.alarm == 1){
+        document.getElementById("alarmaTemp").innerHTML = "Fiebre no detectada";
+        document.getElementById("alarmaTemp").style.backgroundColor = "Tomato";
+      } else {
+        document.getElementById("alarmaTemp").innerHTML = "Fiebre no detectadad en tiempo:" + d.timestamp;
+      }
+    });
+  });
+  temp.load({
+    url: 'Temperature.csv'
+  });
+}, 1000);
+</script>
+
+</html>

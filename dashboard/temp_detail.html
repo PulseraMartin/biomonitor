@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+    <link href="../dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+    <link href="dashboard.css" rel="stylesheet">
+    <script src="../assets/js/ie-emulation-modes-warning.js"></script>
+    <!-- d3 scripts -->
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.js"></script>
+    <script type="text/javascript" src="../c3.min.js"></script>
+    <link href="../c3.css" rel="stylesheet" type="text/css">
+
+    <script>
+    setInterval(updateData, 1000); //300000 MS == 5 minutes
+    function updateData() {
+      $("#circle").load("../temperature/tempValue.csv");
+      $("#Caida_circle").load("../accelerometer/Caida.csv");
+      $("#EDA_circle").load("../ppg/oximetria.csv");
+      $("#BPM_circle").load("../ppg/pulso.csv");
+    }
+    </script>
+    <script>
+    setInterval(checkAlarm, 1200); //300000 MS == 5 minutes
+    function checkAlarm() {
+      var x = document.getElementById('Caida_circle').innerHTML;
+      if(document.getElementById('Caida_circle').innerHTML.match(/1/)){
+        alert("Caida detectada");
+      }
+    }
+    </script>
+    <title>Dashboard Template for Bootstrap</title>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-12 main">
+          <h3 align="center" class="page-header">MVR Dashboard: Indicadores</h3>
+            <div class="row placeholders">
+            <h4 align="center" class="page-header">Datos Crudos</h4>
+            <div align="center">
+              <div id="chartTemp" height="50" width="100" align="center"></div>
+              <h5 align="center">Temperatura</h5>
+            </div>
+          </div>
+
+          <div class="row placeholders">
+            <div align="center">
+              <div align="center" id="circle" width="190" height="190">Tº</div>
+              <h4>Temperature</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="../../dist/js/bootstrap.min.js"></script>
+    <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
+    <script src="../../assets/js/vendor/holder.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+    <script>
+
+    ///// TEMPERATURE CHART
+    var chartTemp = c3.generate({
+        bindto: '#chartTemp',
+        data: {
+            x: 'x',               //the x-axis
+            url: '../temperature/tempHistory.csv'
+        },
+        axis: {
+          x: {
+              type: 'indexed', // needed?
+              label: {
+                  text: 'tiempo',
+                  position: 'inner-bottom' // inner-top : default, inner-middle, inner-bottom, outer-top, outer-middle, outer-bottom
+              }
+          },
+          y: {
+              label: {
+                  text: 'Celcius (Cº)',
+                  position: 'outer-top' // inner-top : default, inner-middle, inner-bottom, outer-top, outer-middle, outer-bottom
+              }
+          }
+        }
+    });
+
+    setInterval(function () {
+      chartTemp.load({
+        url: '../temperature/tempHistory.csv'
+      });
+    }, 1000);
+
+    </script>
+  </body>
+</html>
